@@ -1,14 +1,17 @@
 import paho.mqtt.client as mqtt
 import serial
+import esg.lib.Topic2TJC.MQTT_Init
+import MQTT_Init
+
+# import ..callback
+from ..import callback
 
 end = [0xff, 0xff, 0xff]
 port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
 ary_end = bytearray(end)
 
-def serial_tjc():
-    end = [0xff, 0xff, 0xff]
-    port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
-    ary_end = bytearray(end)
+add()
+serial_tjc()
 
 # ############################################
 # MQTT initial
@@ -51,8 +54,6 @@ client.message_callback_add('cvilux/#', MQTT_Revice_Test)
 # Define esp32_1_temp loop in callback function
 # Define esp32_1_humi loop in callback function
 ###############################################
-def q123():
-    return 20
 
 def callback_esp32_1_temp(client, userdata, msg):
     global ESP_temp1
