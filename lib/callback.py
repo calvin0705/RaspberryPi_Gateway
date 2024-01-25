@@ -5,7 +5,6 @@ end = [0xff, 0xff, 0xff]
 port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
 ary_end = bytearray(end)
 
-
 # ############################################
 # MQTT initial
 # ############################################
@@ -65,12 +64,12 @@ def callback_esp32_1_temp(client, userdata, msg):
     except:
         print("wait data to tjc lcd (task2)")
 
-client.message_callback_add('cvilux/temp-1', callback_esp32_1_temp)
+client.message_callback_add('cvilux/1/temp/1', callback_esp32_1_temp)
 
 def callback_esp32_1_humi(client, userdata, msg):
     global ESP_humi1
     ESP_humi1 = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/humi-1', callback_esp32_1_humi)
+client.message_callback_add('cvilux/1/humi/1', callback_esp32_1_humi)
 
 ###############################################
 # Define esp32_2_temp loop in callback function
@@ -114,7 +113,31 @@ client.message_callback_add('cvilux/CO-1', callback_esp32_CO)
 def callback_esp32_CO2(client, userdata, msg):
     global ESP_CO2
     ESP_CO2 = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/CO2-1', callback_esp32_CO2)
+    
+    print("ESP_teESP_CO2mp1 ============================>>>>>>>>>>>>>>  ", ESP_CO2)
+
+    ESP_CO2 = float(ESP_CO2)
+
+    ESP_CO2 = round(ESP_CO2, 2)
+
+    ESP_CO2_tjc = ESP_CO2
+
+    ESP_CO2_tjc = str(ESP_CO2_tjc)
+
+    print("ESP_temp1 : ", ESP_temp1)
+
+    try:
+        recv_buffer = '\"' + ESP_CO2_tjc + '\"'
+        TJC_LCD2 = "t1.txt=" + str(recv_buffer)
+        port_lcd.write(TJC_LCD2.encode())
+        port_lcd.write(ary_end)
+        
+        recv_buffer = b''
+        data = None
+        
+    except:
+        print("wait data to tjc lcd (task2)")
+client.message_callback_add('cvilux/1/co2/1', callback_esp32_CO2)
 
 ###############################################
 # Define esp32_CO2 loop in callback function

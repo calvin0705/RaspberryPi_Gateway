@@ -296,7 +296,8 @@ client.on_connect = on_connect
 
 # "clinet" device name define
 def client_subscriptions(client):
-    client.subscribe("cvilux/#")
+    # client.subscribe("cvilux/#")
+    client.subscribe("cvilux/6/temp/4")
 ###############################################
 # Define esp32_1_temp loop in callback function
 # Define esp32_1_humi loop in callback function
@@ -399,6 +400,7 @@ client.message_callback_add('cvilux/PM10-1', callback_esp32_PM10)
 # ############################################
 
 def task1(): # MQTT flag
+    print("q123.............. ", lib.callback.q123())
     if (flag_connected != 1):
         print("task1..")
         # client.on_connect = on_connect
@@ -688,11 +690,11 @@ def task11(): # PM10
 
 
 if __name__ == '__main__':
-    # task1()  # MQTT flag
+    task1()  # MQTT flag
     # task2()  # ESP32_1 temp/humi
     task3()  # ESP32_2 temp/humi
     task4()  # ESP32_3 temp/humi
-    task5()  # offset
+    # task5()  # offset
     task6()  # CO
     task7()  # CO2
     task8()  # CH2O
