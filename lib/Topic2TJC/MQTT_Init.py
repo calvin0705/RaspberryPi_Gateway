@@ -1,46 +1,27 @@
 import paho.mqtt.client as mqtt
 import serial
 
+end = [0xff, 0xff, 0xff]
+port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
+ary_end = bytearray(end)
 
-def add123():
-    print("1+1=2")
+def float_reduce_str(sen_payload,float_num,txt_num):
 
-def serial_tjc():
-    end = [0xff, 0xff, 0xff]
-    port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
-    ary_end = bytearray(end)
+    sen_payload = float(sen_payload)
+    sen_payload = round(sen_payload, float_num)
+    ESP_temp1_tjc = str(sen_payload)
+    print("ESP_temp1_tjc : ", ESP_temp1_tjc)
 
-def on_connect(client, userdata, flags, rc):
-   global flag_connected
-   flag_connected = 1
-   client_subscriptions(client)
-   print("Connected to MQTT server")
-
-def on_disconnect(client, userdata, rc):
-   global flag_connected
-   flag_connected = 0
-   print("Disconnected from MQTT server")
-
-def client_subscriptions(client):
-    client.subscribe("cvilux/#")
-
-
-# ############################################
-# Set at SN py
-# ############################################
-# client = mqtt.Client("rpi_client1") #this should be a unique name
-# flag_connected = 0
-# client.on_connect = on_connect
-# client.on_disconnect = on_disconnect
-
-# ############################################
-
-# client.connect('127.0.0.1',1883)
-
-# client.loop_start() # start a new thread
-# client_subscriptions(client)
-# print("......client setup complete............")
-
-# MQTT initial END
-# ############################################
+    try:
+        recv_buffer = '\"' + ESP_temp1_tjc + '\"'
+        txt_num = txt_num + '='
+        TJC_LCD2 = txt_num + recv_buffer
+        port_lcd.write(TJC_LCD2.encode())
+        port_lcd.write(ary_end)
+        
+        recv_buffer = b''
+        data = None
+        
+    except:
+        print("float_reduce_str fail => ", txt_num)
     
