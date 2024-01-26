@@ -16,6 +16,9 @@ import struct
 import numpy as np
 import csv
 
+# ############################################
+# Subscrpt MQTT topic by SN1~9
+# ############################################
 # import lib.callback
 import lib.Topic2TJC.SN1
 import lib.Topic2TJC.SN2
@@ -26,6 +29,8 @@ import lib.Topic2TJC.SN6
 import lib.Topic2TJC.SN7
 import lib.Topic2TJC.SN8
 import lib.Topic2TJC.SN9
+# Subscrpt MQTT topic by SN1~9
+# ############################################
 
 end = [0xff, 0xff, 0xff]
 port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
@@ -56,7 +61,6 @@ ESP_CH2O  = 0
 ESP_PM1_0 = 0
 ESP_PM2_5 = 0
 ESP_PM10  = 0
-
 
 global temp_offset_1
 global humi_offset_1

@@ -60,7 +60,7 @@ def callback_esp32_1_temp(client, userdata, msg):
     global ESP_temp1
     ESP_temp1 = msg.payload.decode('utf-8')
 
-    print("ESP_temp1 000=====================================================>>>>> ", ESP_temp1)
+    print("ESP_temp1 66666666 =====================================================>>>>> ", ESP_temp1)
 
     ESP_temp1 = float(ESP_temp1)
 

@@ -35,7 +35,7 @@ client.on_disconnect = on_disconnect
 
 # "clinet" device name define
 def client_subscriptions(client):
-    client.subscribe("cvilux/#")
+    client.subscribe("cvilux/3/#")
 
 # "訊息分類/序列/感測器類型/第幾顆"
 # "cvilux/9/pm1_0/1"
@@ -60,7 +60,7 @@ def callback_esp32_1_temp(client, userdata, msg):
     global ESP_temp1
     ESP_temp1 = msg.payload.decode('utf-8')
 
-    print("ESP_temp1 000=====================================================>>>>> ", ESP_temp1)
+    print("ESP_temp1 33333333333  =====================================================>>>>> ", ESP_temp1)
 
     ESP_temp1 = float(ESP_temp1)
 

@@ -7,28 +7,19 @@ end = [0xff, 0xff, 0xff]
 port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
 ary_end = bytearray(end)
 
-def serial_tjc():
-    end = [0xff, 0xff, 0xff]
-    port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
-    ary_end = bytearray(end)
-
 # ############################################
 # MQTT initial
 # ############################################
 def on_connect(client_sn1, userdata, flags, rc):
-   
    global flag_connected
    flag_connected = 1
    client_subscriptions(client_sn1)
    print("Connected to MQTT server")
-   print("sn1 ----------- 1111111111 ")
 
 def on_disconnect(client_sn1, userdata, rc):
-   
    global flag_connected
    flag_connected = 0
    print("Disconnected from MQTT server")
-   print("sn1 ----------- 22222222222222 ")
 
 client_sn1 = mqtt.Client("rpi_client_sn1") #this should be a unique name
 flag_connected = 0
@@ -37,46 +28,42 @@ client_sn1.on_disconnect = on_disconnect
 
 # "clinet" device name define
 def client_subscriptions(client_sn1):
-    client_sn1.subscribe("cvilux/#")
+    client_sn1.subscribe("cvilux/1/#")
 
-# "訊息分類/序列/感測器類型/第幾顆"
-# "cvilux/9/pm1_0/1"
-###############################################
-# MQTT Revice Test
-###############################################
-# def MQTT_Revice_Test(client_sn1, userdata, msg):
-#     global cvilux_all
-#     cvilux_all = msg.payload.decode('utf-8')
+# ############################################
+# Sub Function
+# ############################################
+# def float_reduce_str(sen_payload,float_num):
+#     # ESP_temp1 = msg.payload.decode('utf-8')
 
-#     print("MQTT_Revice_Test(cvilux_all) ------------------------------------ 11111111111111111111 ", cvilux_all)
+#     sen_payload = float(sen_payload)
+#     sen_payload = round(sen_payload, float_num)
+#     ESP_temp1_tjc = str(sen_payload)
+#     print("ESP_temp1_tjc : ", ESP_temp1_tjc)
 
-# client_sn1.message_callback_add('cvilux/1/#', MQTT_Revice_Test)
-###############################################
-# Define esp32_1_temp loop in callback function
-# Define esp32_1_humi loop in callback function
-###############################################
-def q123():
-    return 20
+#     try:
+#         recv_buffer = '\"' + ESP_temp1_tjc + '\"'
+#         TJC_LCD2 = "t271.txt=" + str(recv_buffer)
+#         port_lcd.write(TJC_LCD2.encode())
+#         port_lcd.write(ary_end)
+        
+#         recv_buffer = b''
+#         data = None
+        
+#     except:
+#         print("wait data to tjc lcd (task2)")
+    
+def float_reduce_str(sen_payload,float_num,txt_num):
 
-def callback_esp32_1_temp(client_sn1, userdata, msg):
-    global ESP_temp1
-    ESP_temp1 = msg.payload.decode('utf-8')
-
-    # print("ESP_temp1 000=====================================================>>>>> ", ESP_temp1)
-
-    ESP_temp1 = float(ESP_temp1)
-
-    ESP_temp1 = round(ESP_temp1, 2)
-
-    ESP_temp1_tjc = ESP_temp1
-
-    ESP_temp1_tjc = str(ESP_temp1_tjc)
-
-    print("ESP_temp1 : ", ESP_temp1)
+    sen_payload = float(sen_payload)
+    sen_payload = round(sen_payload, float_num)
+    ESP_temp1_tjc = str(sen_payload)
+    print("ESP_temp1_tjc : ", ESP_temp1_tjc)
 
     try:
         recv_buffer = '\"' + ESP_temp1_tjc + '\"'
-        TJC_LCD2 = "t271.txt=" + str(recv_buffer)
+        txt_num = txt_num + '='
+        TJC_LCD2 = txt_num + recv_buffer
         port_lcd.write(TJC_LCD2.encode())
         port_lcd.write(ary_end)
         
@@ -84,7 +71,18 @@ def callback_esp32_1_temp(client_sn1, userdata, msg):
         data = None
         
     except:
-        print("wait data to tjc lcd (task2)")
+        print("float_reduce_str => fail ")
+
+
+# "訊息分類/序列/感測器類型/第幾顆"
+# "cvilux/1/pm1_0/1"
+###############################################
+# Define esp32_1_temp loop in callback function
+# Define esp32_1_humi loop in callback function
+###############################################
+def callback_esp32_1_temp(client_sn1, userdata, msg):
+    ESP_temp1 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_temp1,2,"t271.txt")
 
 client_sn1.message_callback_add('cvilux/1/temp/1', callback_esp32_1_temp)
 
@@ -156,8 +154,8 @@ def callback_esp32_CO2(client_sn1, userdata, msg):
         data = None
         
     except:
-        print("wait data to tjc lcd (task2)")
-client_sn1.message_callback_add('cvilux/1/co2/1', callback_esp32_CO2)
+        print("wait data to tjc lcd (task2)1111111111")
+client_sn1.message_callback_add('cvilux/9/co2/1', callback_esp32_CO2)
 
 ###############################################
 # Define esp32_CO2 loop in callback function
