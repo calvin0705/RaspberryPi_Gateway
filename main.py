@@ -705,12 +705,12 @@ def task11(): # PM10
 if __name__ == '__main__':
     task1()  # MQTT flag
     # task2()  # ESP32_1 temp/humi
-    task3()  # ESP32_2 temp/humi
-    task4()  # ESP32_3 temp/humi
-    # task5()  # offset
-    task6()  # CO
-    task7()  # CO2
-    task8()  # CH2O
-    task9()  # PM1.0
-    task10() # PM2.5
-    task11() # PM10
+    # task3()  # ESP32_2 temp/humi
+    # task4()  # ESP32_3 temp/humi
+    task5()  # offset
+    # task6()  # CO
+    # task7()  # CO2
+    # task8()  # CH2O
+    # task9()  # PM1.0
+    # task10() # PM2.5
+    # task11() # PM10

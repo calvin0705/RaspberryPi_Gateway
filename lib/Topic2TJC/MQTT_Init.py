@@ -5,6 +5,11 @@ end = [0xff, 0xff, 0xff]
 port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
 ary_end = bytearray(end)
 
+def serial_init():
+    end = [0xff, 0xff, 0xff]
+    port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
+    ary_end = bytearray(end)
+
 def float_reduce_str(sen_payload,float_num,txt_num):
 
     sen_payload = float(sen_payload)
@@ -24,4 +29,15 @@ def float_reduce_str(sen_payload,float_num,txt_num):
         
     except:
         print("float_reduce_str fail => ", txt_num)
+
+
+def on_connect(client_sn1, userdata, flags, rc):
+   client_subscriptions(client_sn1)
+   print("Connected to MQTT server")
+
+def on_disconnect(client_sn1, userdata, rc):
+   print("Disconnected from MQTT server")
+
+def client_subscriptions(client_sn1):
+    client_sn1.subscribe("is ok")
     
