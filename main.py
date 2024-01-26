@@ -16,7 +16,16 @@ import struct
 import numpy as np
 import csv
 
-import lib.callback
+# import lib.callback
+import lib.Topic2TJC.SN1
+import lib.Topic2TJC.SN2
+import lib.Topic2TJC.SN3
+import lib.Topic2TJC.SN4
+import lib.Topic2TJC.SN5
+import lib.Topic2TJC.SN6
+import lib.Topic2TJC.SN7
+import lib.Topic2TJC.SN8
+import lib.Topic2TJC.SN9
 
 end = [0xff, 0xff, 0xff]
 port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
@@ -400,7 +409,7 @@ client.message_callback_add('cvilux/PM10-1', callback_esp32_PM10)
 # ############################################
 
 def task1(): # MQTT flag
-    print("q123.............. ", lib.callback.q123())
+    # print("q123.............. ", lib.callback.q123())
     if (flag_connected != 1):
         print("task1..")
         # client.on_connect = on_connect

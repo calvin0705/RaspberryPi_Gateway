@@ -5,11 +5,6 @@ end = [0xff, 0xff, 0xff]
 port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
 ary_end = bytearray(end)
 
-def serial_tjc():
-    end = [0xff, 0xff, 0xff]
-    port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
-    ary_end = bytearray(end)
-
 # ############################################
 # MQTT initial
 # ############################################
@@ -40,25 +35,21 @@ def client_subscriptions(client):
 ###############################################
 # MQTT Revice Test
 ###############################################
-def MQTT_Revice_Test(client, userdata, msg):
-    global cvilux_all
-    cvilux_all = msg.payload.decode('utf-8')
+# def MQTT_Revice_Test(client, userdata, msg):
+#     global cvilux_all
+#     cvilux_all = msg.payload.decode('utf-8')
 
-    print("MQTT_Revice_Test(cvilux_all) ------------------------------------!!!!!!!!!!!!!!!!", cvilux_all)
+#     print("MQTT_Revice_Test(cvilux_all) ------------------------------------!!!!!!!!!!!!!!!!", cvilux_all)
 
-client.message_callback_add('cvilux/#', MQTT_Revice_Test)
+# client.message_callback_add('cvilux/#', MQTT_Revice_Test)
 ###############################################
 # Define esp32_1_temp loop in callback function
 # Define esp32_1_humi loop in callback function
 ###############################################
-def q123():
-    return 20
 
 def callback_esp32_1_temp(client, userdata, msg):
     global ESP_temp1
     ESP_temp1 = msg.payload.decode('utf-8')
-
-    print("ESP_temp1 000=====================================================>>>>> ", ESP_temp1)
 
     ESP_temp1 = float(ESP_temp1)
 

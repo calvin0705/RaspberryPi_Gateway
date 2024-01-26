@@ -1,9 +1,9 @@
 import paho.mqtt.client as mqtt
 import serial
 
-def add():
+
+def add123():
     print("1+1=2")
-    
 
 def serial_tjc():
     end = [0xff, 0xff, 0xff]
