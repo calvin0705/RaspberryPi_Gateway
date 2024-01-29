@@ -17,7 +17,7 @@ def Gpio_Init():
 
 def Debug_Setting():
     format = '%(asctime)s - [%(filename)s][line:%(lineno)d][%(funcName)s()] - %(levelname)s: %(message)s'
-    logging.basicConfig(level=logging.INFO,format=format,filename=time.strftime('/home/pi/log/boot/%Y%m%d_%H%M%S.bootlog'),filemode='w')
+    logging.basicConfig(level=logging.INFO,format=format,filename=time.strftime('/home/pi/esg/lib/log/boot/%Y%m%d_%H%M%S.bootlog'),filemode='w')
 
 def Fan_Init():
     for x in range(300):
@@ -60,13 +60,14 @@ def Fan_Service():
     Pwm = Fan_Pwm()
     
     for x in range(16000):
-        Fan_Run(Pwm)        
+        Fan_Run(Pwm)           
 
 
 ######################################
 ############ Delete_Log_Service ######
 def Delete_BootLog_Service():
-    dirToBeEmptied = '/home/pi/log/boot' 
+    #dirToBeEmptied = '/home/pi/log/boot' 
+    dirToBeEmptied = '/home/pi/esg/lib/log/boot/'
     ds = list(os.walk(dirToBeEmptied)) #獲得所有資料夾的資訊列表
     delta = datetime.timedelta(days=7) # Only days, seconds, and microseconds remain
     now = datetime.datetime.now() #獲取當前時間
@@ -82,7 +83,8 @@ def Delete_BootLog_Service():
                     os.remove(x) #則刪掉
 
 def Delete_C20Log_Service():
-    dirToBeEmptied = '/home/pi/log/c20' 
+    #dirToBeEmptied = '/home/pi/log/c20' 
+    dirToBeEmptied = '/home/pi/esg/lib/log/c20' 
     ds = list(os.walk(dirToBeEmptied)) #獲得所有資料夾的資訊列表
     delta = datetime.timedelta(days=7) # Only days, seconds, and microseconds remain
     now = datetime.datetime.now() #獲取當前時間
@@ -110,6 +112,7 @@ def Init_App():
     Fan_Init()
     Debug_Setting()
     Delete_Log_Service()
+    print("55555555555555555")
 
 def main():
 
@@ -117,6 +120,7 @@ def main():
 
     while True:
         Fan_Service()
+        
         
 if __name__ == '__main__':
     main()

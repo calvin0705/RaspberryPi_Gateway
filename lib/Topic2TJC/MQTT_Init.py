@@ -15,7 +15,7 @@ def float_reduce_str(sen_payload,float_num,txt_num):
     sen_payload = float(sen_payload)
     sen_payload = round(sen_payload, float_num)
     ESP_temp1_tjc = str(sen_payload)
-    print("ESP_temp1_tjc : ", ESP_temp1_tjc)
+    print("float_reduce_str : ", ESP_temp1_tjc)
 
     try:
         recv_buffer = '\"' + ESP_temp1_tjc + '\"'

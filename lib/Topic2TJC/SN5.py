@@ -1,202 +1,176 @@
 import paho.mqtt.client as mqtt
-import serial
+from lib.Topic2TJC.MQTT_Init import float_reduce_str
+from lib.Topic2TJC.MQTT_Init import serial_init
+from lib.Topic2TJC.MQTT_Init import on_connect
+from lib.Topic2TJC.MQTT_Init import on_disconnect
 
-print("SN.PY ------------------------------------ 55555555555555555555555555555555")
-
-end = [0xff, 0xff, 0xff]
-port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
-ary_end = bytearray(end)
-
-def serial_tjc():
-    end = [0xff, 0xff, 0xff]
-    port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
-    ary_end = bytearray(end)
+print("SN.PY ------------------------------------ 555555 ")
+serial_init()
 
 # ############################################
 # MQTT initial
 # ############################################
-def on_connect(client, userdata, flags, rc):
-   
-   global flag_connected
-   flag_connected = 1
-   client_subscriptions(client)
-   print("Connected to MQTT server")
-
-def on_disconnect(client, userdata, rc):
-   
-   global flag_connected
-   flag_connected = 0
-   print("Disconnected from MQTT server")
-
-client = mqtt.Client("rpi_client1_sn5") #this should be a unique name
+client_sn5 = mqtt.Client("rpi_client_sn5") #this should be a unique name
 flag_connected = 0
-client.on_connect = on_connect
-client.on_disconnect = on_disconnect
+client_sn5.on_connect = on_connect
+client_sn5.on_disconnect = on_disconnect
 
 # "clinet" device name define
-def client_subscriptions(client):
-    client.subscribe("cvilux/5/#")
+def client_subscriptions(client_sn5):
+    client_sn5.subscribe("cvilux/5/#")
 
 # "訊息分類/序列/感測器類型/第幾顆"
-# "cvilux/9/pm1_0/1"
+# "cvilux/1/pm1_0/1"
 ###############################################
-# MQTT Revice Test
+# SN5-1
 ###############################################
-def MQTT_Revice_Test(client, userdata, msg):
-    global cvilux_all
-    cvilux_all = msg.payload.decode('utf-8')
+def callback_esp32_1_pm2_5(client_sn5, userdata, msg):
+    ESP_pm2_5 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm2_5,2,"t101.txt")
+client_sn5.message_callback_add('cvilux/5/pm2_5/1', callback_esp32_1_pm2_5)
 
-    print("MQTT_Revice_Test(cvilux_all) ------------------------------------ 555555555555555555555555555 ", cvilux_all)
+def callback_esp32_1_pm10(client_sn5, userdata, msg):
+    ESP_pm10 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm10,2,"t102.txt")
+client_sn5.message_callback_add('cvilux/5/pm10/1', callback_esp32_1_pm10)
 
-client.message_callback_add('cvilux/#', MQTT_Revice_Test)
-###############################################
-# Define esp32_1_temp loop in callback function
-# Define esp32_1_humi loop in callback function
-###############################################
-def q123():
-    return 20
-
-def callback_esp32_1_temp(client, userdata, msg):
-    global ESP_temp1
-    ESP_temp1 = msg.payload.decode('utf-8')
-
-    print("ESP_temp1 55555555555555 =====================================================>>>>> ", ESP_temp1)
-
-    ESP_temp1 = float(ESP_temp1)
-
-    ESP_temp1 = round(ESP_temp1, 2)
-
-    ESP_temp1_tjc = ESP_temp1
-
-    ESP_temp1_tjc = str(ESP_temp1_tjc)
-
-    print("ESP_temp1 : ", ESP_temp1)
-
-    try:
-        recv_buffer = '\"' + ESP_temp1_tjc + '\"'
-        TJC_LCD2 = "t271.txt=" + str(recv_buffer)
-        port_lcd.write(TJC_LCD2.encode())
-        port_lcd.write(ary_end)
-        
-        recv_buffer = b''
-        data = None
-        
-    except:
-        print("wait data to tjc lcd (task2)")
-
-client.message_callback_add('cvilux/1/temp/1', callback_esp32_1_temp)
-
-def callback_esp32_1_humi(client, userdata, msg):
-    global ESP_humi1
-    ESP_humi1 = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/1/humi/1', callback_esp32_1_humi)
+def callback_esp32_1_pm1_0(client_sn5, userdata, msg):
+    ESP_pm1_0 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm1_0,2,"t103.txt")
+client_sn5.message_callback_add('cvilux/5/pm1_0/1', callback_esp32_1_pm1_0)
 
 ###############################################
-# Define esp32_2_temp loop in callback function
-# Define esp32_2_humi loop in callback functionz
+# SN5-2
 ###############################################
-def callback_esp32_2_temp(client, userdata, msg):
-    global ESP_temp2
-    ESP_temp2 = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/temp-2', callback_esp32_2_temp)
+def callback_esp32_2_pm2_5(client_sn5, userdata, msg):
+    ESP_pm2_5 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm2_5,2,"t101.txt")
+client_sn5.message_callback_add('cvilux/5/pm2_5/2', callback_esp32_2_pm2_5)
 
-def callback_esp32_2_humi(client, userdata, msg):
-    global ESP_humi2
-    ESP_humi2 = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/humi-2', callback_esp32_2_humi)
+def callback_esp32_2_pm10(client_sn5, userdata, msg):
+    ESP_pm10 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm10,2,"t102.txt")
+client_sn5.message_callback_add('cvilux/5/pm10/2', callback_esp32_2_pm10)
 
-###############################################
-# Define esp32_3_temp loop in callback function
-# Define esp32_3_humi loop in callback function
-###############################################
-def callback_esp32_3_temp(client, userdata, msg):
-    global ESP_temp3
-    ESP_temp3 = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/temp-3', callback_esp32_3_temp)
-
-def callback_esp32_3_humi(client, userdata, msg):
-    global ESP_humi3
-    ESP_humi3 = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/humi-3', callback_esp32_3_humi)
+def callback_esp32_2_pm1_0(client_sn5, userdata, msg):
+    ESP_pm1_0 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm1_0,2,"t103.txt")
+client_sn5.message_callback_add('cvilux/5/pm1_0/2', callback_esp32_2_pm1_0)
 
 ###############################################
-# Define esp32_CO loop in callback function
+# SN5-3
 ###############################################
-def callback_esp32_CO(client, userdata, msg):
-    global ESP_CO
-    ESP_CO = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/CO-1', callback_esp32_CO)
+def callback_esp32_3_pm2_5(client_sn5, userdata, msg):
+    ESP_pm2_5 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm2_5,2,"t101.txt")
+client_sn5.message_callback_add('cvilux/5/pm2_5/3', callback_esp32_3_pm2_5)
 
-###############################################
-# Define esp32_CO2 loop in callback function
-###############################################
-def callback_esp32_CO2(client, userdata, msg):
-    global ESP_CO2
-    ESP_CO2 = msg.payload.decode('utf-8')
+def callback_esp32_3_pm10(client_sn5, userdata, msg):
+    ESP_pm10 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm10,2,"t102.txt")
+client_sn5.message_callback_add('cvilux/5/pm10/3', callback_esp32_3_pm10)
 
-    ESP_CO2 = float(ESP_CO2)
-
-    ESP_CO2 = round(ESP_CO2, 2)
-
-    ESP_CO2_tjc = ESP_CO2
-
-    ESP_CO2_tjc = str(ESP_CO2_tjc)
-
-    print("ESP_CO2 : ", ESP_CO2)
-
-    try:
-        recv_buffer = '\"' + ESP_CO2_tjc + '\"'
-        TJC_LCD2 = "t270.txt=" + str(recv_buffer)
-        port_lcd.write(TJC_LCD2.encode())
-        port_lcd.write(ary_end)
-        
-        recv_buffer = b''
-        data = None
-        
-    except:
-        print("wait data to tjc lcd (task2)")
-client.message_callback_add('cvilux/1/co2/1', callback_esp32_CO2)
+def callback_esp32_3_pm1_0(client_sn5, userdata, msg):
+    ESP_pm1_0 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm1_0,2,"t103.txt")
+client_sn5.message_callback_add('cvilux/5/pm1_0/3', callback_esp32_3_pm1_0)
 
 ###############################################
-# Define esp32_CO2 loop in callback function
+# SN5-4
 ###############################################
-def callback_esp32_CH2O(client, userdata, msg):
-    global ESP_CH2O
-    ESP_CH2O = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/CH2O-1', callback_esp32_CH2O)
+def callback_esp32_4_pm2_5(client_sn5, userdata, msg):
+    ESP_pm2_5 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm2_5,2,"t101.txt")
+client_sn5.message_callback_add('cvilux/5/pm2_5/4', callback_esp32_4_pm2_5)
+
+def callback_esp32_4_pm10(client_sn5, userdata, msg):
+    ESP_pm10 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm10,2,"t102.txt")
+client_sn5.message_callback_add('cvilux/5/pm10/4', callback_esp32_4_pm10)
+
+def callback_esp32_4_pm1_0(client_sn5, userdata, msg):
+    ESP_pm1_0 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm1_0,2,"t103.txt")
+client_sn5.message_callback_add('cvilux/5/pm1_0/4', callback_esp32_4_pm1_0)
 
 ###############################################
-# Define PM1.0
+# SN5-5
 ###############################################
-def callback_esp32_PM1_0(client, userdata, msg):
-    global ESP_PM1_0
-    ESP_PM1_0 = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/PM1_0-1', callback_esp32_PM1_0)
+def callback_esp32_5_pm2_5(client_sn5, userdata, msg):
+    ESP_pm2_5 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm2_5,2,"t101.txt")
+client_sn5.message_callback_add('cvilux/5/pm2_5/5', callback_esp32_5_pm2_5)
+
+def callback_esp32_5_pm10(client_sn5, userdata, msg):
+    ESP_pm10 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm10,2,"t102.txt")
+client_sn5.message_callback_add('cvilux/5/pm10/5', callback_esp32_5_pm10)
+
+def callback_esp32_5_pm1_0(client_sn5, userdata, msg):
+    ESP_pm1_0 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm1_0,2,"t103.txt")
+client_sn5.message_callback_add('cvilux/5/pm1_0/5', callback_esp32_5_pm1_0)
 
 ###############################################
-# Define PM2.5
+# SN5-6
 ###############################################
-def callback_esp32_PM2_5(client, userdata, msg):
-    global ESP_PM2_5
-    ESP_PM2_5 = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/PM2_5-1', callback_esp32_PM2_5)
+def callback_esp32_6_pm2_5(client_sn5, userdata, msg):
+    ESP_pm2_5 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm2_5,2,"t101.txt")
+client_sn5.message_callback_add('cvilux/5/pm2_5/6', callback_esp32_6_pm2_5)
+
+def callback_esp32_6_pm10(client_sn5, userdata, msg):
+    ESP_pm10 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm10,2,"t102.txt")
+client_sn5.message_callback_add('cvilux/5/pm10/6', callback_esp32_6_pm10)
+
+def callback_esp32_6_pm1_0(client_sn5, userdata, msg):
+    ESP_pm1_0 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm1_0,2,"t103.txt")
+client_sn5.message_callback_add('cvilux/5/pm1_0/6', callback_esp32_6_pm1_0)
 
 ###############################################
-# Define PM10
+# SN5-7
 ###############################################
-def callback_esp32_PM10(client, userdata, msg):
-    global ESP_PM10
-    ESP_PM10 = msg.payload.decode('utf-8')
-client.message_callback_add('cvilux/PM10-1', callback_esp32_PM10)
+def callback_esp32_7_pm2_5(client_sn5, userdata, msg):
+    ESP_pm2_5 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm2_5,2,"t101.txt")
+client_sn5.message_callback_add('cvilux/5/pm2_5/7', callback_esp32_7_pm2_5)
 
-######### define callback initial end ########
+def callback_esp32_7_pm10(client_sn5, userdata, msg):
+    ESP_pm10 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm10,2,"t102.txt")
+client_sn5.message_callback_add('cvilux/5/pm10/7', callback_esp32_7_pm10)
+
+def callback_esp32_7_pm1_0(client_sn5, userdata, msg):
+    ESP_pm1_0 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm1_0,2,"t103.txt")
+client_sn5.message_callback_add('cvilux/5/pm1_0/7', callback_esp32_7_pm1_0)
+
 ###############################################
+# SN5-8
+###############################################
+def callback_esp32_8_pm2_5(client_sn5, userdata, msg):
+    ESP_pm2_5 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm2_5,2,"t101.txt")
+client_sn5.message_callback_add('cvilux/5/pm2_5/8', callback_esp32_8_pm2_5)
 
+def callback_esp32_8_pm10(client_sn5, userdata, msg):
+    ESP_pm10 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm10,2,"t102.txt")
+client_sn5.message_callback_add('cvilux/5/pm10/8', callback_esp32_8_pm10)
 
-client.connect('127.0.0.1',1883)
+def callback_esp32_8_pm1_0(client_sn5, userdata, msg):
+    ESP_pm1_0 = msg.payload.decode('utf-8')
+    float_reduce_str(ESP_pm1_0,2,"t103.txt")
+client_sn5.message_callback_add('cvilux/5/pm1_0/8', callback_esp32_8_pm1_0)
 
-client.loop_start() # start a new thread
-client_subscriptions(client)
-print("......client setup complete............")
+# ############################################
+# Client to connecct MQTT server
+# ############################################
+client_sn5.connect('127.0.0.1',1883)
+client_sn5.loop_start() # start a new thread
+client_subscriptions(client_sn5)
+print("......client_sn5 setup complete............")
 # MQTT initial END
 # ############################################
