@@ -17,22 +17,39 @@ def Gpio_Init():
 
 def Debug_Setting():
     format = '%(asctime)s - [%(filename)s][line:%(lineno)d][%(funcName)s()] - %(levelname)s: %(message)s'
-    logging.basicConfig(level=logging.INFO,format=format,filename=time.strftime('/home/pi/esg/lib/log/boot/%Y%m%d_%H%M%S.bootlog'),filemode='w')
+    logging.basicConfig(level=logging.INFO,format=format,filename=time.strftime('/home/pi/esg/log/boot/%Y%m%d_%H%M%S.bootlog'),filemode='w')
 
 def Fan_Init():
-    for x in range(300):
+    for x in range(600):
         Fan_Run(100)
         
 def ntp_service():
-    #cmd1 = "sudo ntpdate -u ntp.ntsc.ac.cn"    #China time zone
-    #os.system(cmd1)
-    cmd = "sudo ntpdate -u 10.0.2.5"
-    os.system(cmd)
+    ntp_return1 = "0"
+    ntp_return2 = "0"
+    ntp_return3 = "0"
+    
+    cmd1 = "sudo ntpdate -u time.windows.com"
+    cmd2 = "sudo ntpdate -u time1.cloud.tencent.com"
+    cmd3 = "sudo ntpdate -u ntp.aliyun.com"
+    
+    ntp_return1 = str(os.system(cmd1))
+    print("[ntp_return1] ntp_return111 cmd return : " + ntp_return1)
+    
+    while ((ntp_return1 != "0") or (ntp_return2 != "0") or (ntp_return3 != "0")):
+        ntp_return1 = str(os.system(cmd1))
+        print("[ntp_return1] ntp_return1 cmd return : " + ntp_return1)
+        ntp_return2 = str(os.system(cmd2))
+        print("[ntp_return2] ntp_return2 cmd return : " + ntp_return2)
+        ntp_return3 = str(os.system(cmd3))
+        print("[ntp_return3] ntp_return3 cmd return : " + ntp_return3)
+        time.sleep(0.5)
+        if (ntp_return1 == "0") or (ntp_return2 == "0") or (ntp_return3 == "0"):
+            break
     
 
 ######################################
 ############ Fan_Service #############
-def Fan_Run(duty):        
+def Fan_Run(duty):
     GPIO.output(PIN,0)
     sleep((101-duty)*0.0001)
     GPIO.output(PIN,1)
@@ -59,17 +76,18 @@ def Fan_Pwm():
 def Fan_Service():
     Pwm = Fan_Pwm()
     
+    Fan_Init()
+    
     for x in range(16000):
-        Fan_Run(Pwm)           
+        Fan_Run(Pwm)
 
 
 ######################################
 ############ Delete_Log_Service ######
 def Delete_BootLog_Service():
-    #dirToBeEmptied = '/home/pi/log/boot' 
-    dirToBeEmptied = '/home/pi/esg/lib/log/boot/'
+    dirToBeEmptied = '/home/pi/esg/log/boot'
     ds = list(os.walk(dirToBeEmptied)) #獲得所有資料夾的資訊列表
-    delta = datetime.timedelta(days=7) # Only days, seconds, and microseconds remain
+    delta = datetime.timedelta(days=30) # Only days, seconds, and microseconds remain
     now = datetime.datetime.now() #獲取當前時間
 
     for d in ds: #遍歷該列表
@@ -83,10 +101,9 @@ def Delete_BootLog_Service():
                     os.remove(x) #則刪掉
 
 def Delete_C20Log_Service():
-    #dirToBeEmptied = '/home/pi/log/c20' 
-    dirToBeEmptied = '/home/pi/esg/lib/log/c20' 
+    dirToBeEmptied = '/home/pi/esg/log/c20'
     ds = list(os.walk(dirToBeEmptied)) #獲得所有資料夾的資訊列表
-    delta = datetime.timedelta(days=7) # Only days, seconds, and microseconds remain
+    delta = datetime.timedelta(days=30) # Only days, seconds, and microseconds remain
     now = datetime.datetime.now() #獲取當前時間
 
     for d in ds: #遍歷該列表
@@ -107,12 +124,11 @@ def Delete_Log_Service():
 ######################################
 ############ Run Code ################
 def Init_App():
-    #ntp_service()
+    ntp_service()
     Gpio_Init()
     Fan_Init()
     Debug_Setting()
     Delete_Log_Service()
-    print("55555555555555555")
 
 def main():
 
@@ -120,7 +136,6 @@ def main():
 
     while True:
         Fan_Service()
-        
         
 if __name__ == '__main__':
     main()
