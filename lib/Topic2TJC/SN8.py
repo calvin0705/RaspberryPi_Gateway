@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+from lib.Topic2TJC.MQTT_Init import display_tjc
 from lib.Topic2TJC.MQTT_Init import float_reduce_str
 from lib.Topic2TJC.MQTT_Init import serial_init
 from lib.Topic2TJC.MQTT_Init import on_connect
@@ -18,6 +19,33 @@ client_sn8.on_disconnect = on_disconnect
 # "clinet" device name define
 def client_subscriptions(client_sn8):
     client_sn8.subscribe("cvilux/8/#")
+    client_sn8.subscribe("warn/8/#")
+
+###############################################
+# SN8 Warning define
+###############################################
+global warning_over
+warning_over = 0
+
+global warning_clear
+warning_clear = 0
+
+def callback_esp32_8_temp_warn(client_sn8, userdata, msg):
+    global warning_over
+    global warning_clear
+
+    temp_warn_8 = msg.payload.decode('utf-8')
+    
+    if(temp_warn_8 == "over"):
+        warning_over = warning_over + 1
+        print("warning_over  ++++++++++++++++++++++++++++++++++++>> ", warning_over)
+        display_tjc("Warning","b8.txt")
+
+    # if(temp_warn_8 == "clear"):
+    #     warning_clear = warning_clear + 1
+    #     print("warning_clear  -------------------------------------->> ", warning_clear)
+
+client_sn8.message_callback_add('warn/8/#', callback_esp32_8_temp_warn)
 
 # "訊息分類/序列/感測器類型/第幾顆"
 # "cvilux/1/pm1_0/1"

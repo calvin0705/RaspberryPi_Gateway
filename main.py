@@ -16,6 +16,8 @@ import struct
 import numpy as np
 import csv
 
+from lib.Topic2TJC.MQTT_Init import display_tjc
+
 # ############################################
 # Subscrpt MQTT topic by SN1~9
 # ############################################
@@ -413,7 +415,8 @@ client.message_callback_add('cvilux/PM10-1', callback_esp32_PM10)
 # ############################################
 
 def task1(): # MQTT flag
-    # print("q123.............. ", lib.callback.q123())
+    print("task1 =======================================")
+
     if (flag_connected != 1):
         print("task1..")
         # client.on_connect = on_connect
@@ -552,6 +555,7 @@ def task4(): # ESP32_3
     threading.Timer(1, task4).start()
 
 def task5(): # offset
+    print("task5 =======================================")
     global Write_tjc_button
 
     Write_tjc_button = port_lcd.read_all()
@@ -701,6 +705,22 @@ def task11(): # PM10
 
     threading.Timer(1, task11).start()
 
+def task12():
+    display_tjc("","b1.txt")
+    display_tjc("","b2.txt")
+    display_tjc("","b3.txt")
+    display_tjc("","b4.txt")
+    display_tjc("","b5.txt")
+    display_tjc("","b6.txt")
+    display_tjc("","b7.txt")
+    display_tjc("","b8.txt")
+    display_tjc("","b9.txt")
+    time.sleep(0.3)
+
+    print("task12 =======================================")
+
+    threading.Timer(10, task12).start()
+
 
 if __name__ == '__main__':
     task1()  # MQTT flag
@@ -714,3 +734,4 @@ if __name__ == '__main__':
     # task9()  # PM1.0
     # task10() # PM2.5
     # task11() # PM10
+    task12()  # Warning Clear

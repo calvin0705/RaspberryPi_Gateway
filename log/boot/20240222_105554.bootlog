@@ -1,0 +1,8 @@
+2024-02-22 10:55:54,199 - [boot.py][line:62][Get_Tamp()] - INFO: 42
+2024-02-22 10:58:43,721 - [boot.py][line:62][Get_Tamp()] - INFO: 47
+2024-02-22 11:01:33,282 - [boot.py][line:62][Get_Tamp()] - INFO: 50
+2024-02-22 11:04:22,838 - [boot.py][line:62][Get_Tamp()] - INFO: 52
+2024-02-22 11:07:12,404 - [boot.py][line:62][Get_Tamp()] - INFO: 54
+2024-02-22 11:10:01,970 - [boot.py][line:62][Get_Tamp()] - INFO: 55
+2024-02-22 11:12:51,511 - [boot.py][line:62][Get_Tamp()] - INFO: 57
+2024-02-22 11:15:41,221 - [boot.py][line:62][Get_Tamp()] - INFO: 66

@@ -10,6 +10,23 @@ def serial_init():
     port_lcd = serial.Serial(port='/dev/ttyAMA1', baudrate=115200, parity='N', stopbits=1, bytesize=8, timeout=1.0)
     ary_end = bytearray(end)
 
+def display_tjc(txt,tjc_num):
+    try:
+        recv_buffer = '\"' + txt + '\"'
+        txt_num = tjc_num + '='
+        TJC_LCD2 = txt_num + recv_buffer
+
+        print("TJC_LCD2 => ", TJC_LCD2)
+
+        port_lcd.write(TJC_LCD2.encode())
+        port_lcd.write(ary_end)
+        
+        recv_buffer = b''
+        data = None
+        
+    except:
+        print("float_reduce_str fail => ", txt_num)
+
 def float_reduce_str(sen_payload,float_num,txt_num):
 
     sen_payload = float(sen_payload)
