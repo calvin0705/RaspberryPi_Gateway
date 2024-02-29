@@ -719,7 +719,7 @@ def task12():
 
     print("task12 =======================================")
 
-    threading.Timer(10, task12).start()
+    threading.Timer(20, task12).start()
 
 
 if __name__ == '__main__':
