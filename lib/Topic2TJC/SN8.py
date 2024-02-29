@@ -37,8 +37,8 @@ def callback_esp32_8_temp_warn(client_sn8, userdata, msg):
     temp_warn_8 = msg.payload.decode('utf-8')
     
     if(temp_warn_8 == "over"):
-        warning_over = warning_over + 1
-        print("warning_over  ++++++++++++++++++++++++++++++++++++>> ", warning_over)
+        # warning_over = warning_over + 1
+        # print("warning_over  ++++++++++++++++++++++++++++++++++++>> ", warning_over)
         display_tjc("Warning","b8.txt")
 
     # if(temp_warn_8 == "clear"):

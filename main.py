@@ -555,7 +555,7 @@ def task4(): # ESP32_3
     threading.Timer(1, task4).start()
 
 def task5(): # offset
-    print("task5 =======================================")
+    # print("task5 =======================================")
     global Write_tjc_button
 
     Write_tjc_button = port_lcd.read_all()
